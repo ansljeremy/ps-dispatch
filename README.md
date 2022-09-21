@@ -1,4 +1,4 @@
-# Beta Released
+# QBCore Dispatch
 
 Integrated with https://github.com/Project-Sloth/ps-mdt
 
@@ -15,10 +15,58 @@ https://www.discord.gg/projectsloth
 
 
 # Alert Exports
+
+
+# Custom Alert Handler
+```lua
+exports["ps-dispatch"]:CustomAlert({
+    coords = vector3(0.0, 0.0, 0.0),
+    message = "Criminal Activity",
+    dispatchCode = "10-4 Rubber Ducky",
+    description = "Blip Name here",
+    radius = 0,
+    sprite = 64,
+    color = 2,
+    scale = 1.0,
+    length = 3,
+})
+
+Table Arguements:
+
+displayCode -- The code for the alert ( 10-4, 10-11, 400-9, etc)
+message -- Alert message
+gender -- TRUE/FALSE  to enable gender data on the alert
+plate  -- Plate of a vehicle
+priority -- Priority of the alert
+firstColor -- Color of the vehicle
+automaticGunfire -- TRUE/FALSE Automatic weapon
+camId -- Camera ID
+callsign -- Callsign on the player
+name -- Name of the player
+doorCount -- Number of doors the vehicle has
+heading -- Heading of an entity
+description -- Name of the blip 
+radius -- if the blip has a radius
+recipientList -- { "police", "ems", "pbso" } Jobs that get the alert 
+blipSprite -- Blip Sprite
+blipColour -- Blip Color
+blipScale -- Blip Color 
+blipLength -- Blip Length : How long it stays on the map
+offset -- Offset of the blip
+blipflash -- If the blip flashes or not
+sound -- GTA sound to play 
+sound2 -- GTA sound to play
+
+```
+
+# Preset Alert Exports.
+
 ```lua
 - exports['ps-dispatch']:VehicleShooting(vehicle)
 
 - exports['ps-dispatch']:Shooting()
+
+- exports['ps-dispatch']:OfficerDown()
 
 - exports['ps-dispatch']:SpeedingVehicle(vehicle)
 
@@ -28,15 +76,15 @@ https://www.discord.gg/projectsloth
 
 - exports['ps-dispatch']:StoreRobbery(camId)
 
-- exports['ps-dispatch']:FleecaBankRobbery()
+- exports['ps-dispatch']:FleecaBankRobbery(camId)
 
-- exports['ps-dispatch']:PaletoBankRobbery()
+- exports['ps-dispatch']:PaletoBankRobbery(camId)
 
-- exports['ps-dispatch']:PacificBankRobbery()
+- exports['ps-dispatch']:PacificBankRobbery(camId)
 
 - exports['ps-dispatch']:PrisonBreak()
 
-- exports['ps-dispatch']:VangelicoRobbery()
+- exports['ps-dispatch']:VangelicoRobbery(camId)
 
 - exports['ps-dispatch']:HouseRobbery()
 
@@ -65,6 +113,10 @@ https://www.discord.gg/projectsloth
 - exports['ps-dispatch']:CarJacking(vehicle)
 
 - exports['ps-dispatch']:VehicleTheft(vehicle)
+
+- exports['ps-dispatch']:SuspiciousActivity()
+
+- exports['ps-dispatch']:SignRobbery()
 ```
 
 # Steps to Create New Alert
@@ -72,7 +124,7 @@ https://www.discord.gg/projectsloth
 1. Create a client event that will be triggered from whatever script you want
 
 ```lua
-local function FleecaBankRobbery()
+local function FleecaBankRobbery(camId)
     local currentPos = GetEntityCoords(PlayerPedId())
     local locationInfo = getStreetandZone(currentPos)
     local gender = GetPedGender()
@@ -81,6 +133,7 @@ local function FleecaBankRobbery()
         dispatchCode = "10-90",
         firstStreet = locationInfo,
         gender = gender,
+        camId = camId,
         model = nil,
         plate = nil,
         priority = 2, -- priority
@@ -148,3 +201,8 @@ Rest steps will be similar as mentioned above in Steps to create alerts.
 
 * Hunting Zones
 * Locales for alerts
+
+# DMCA Protection Certificate
+![image](https://user-images.githubusercontent.com/82112471/169714852-1c4597b8-0ed3-4b56-a439-d0462681e3ff.png)
+
+https://www.dmca.com/r/d03ek52

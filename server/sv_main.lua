@@ -1,11 +1,11 @@
-QBCore = exports['qb-core']:GetCoreObject()
-calls = {}
+local QBCore = exports['qb-core']:GetCoreObject()
+local calls = {}
 
 function _U(entry)
 	return Locales[Config.Locale][entry] 
 end
 
-function IsPoliceJob(job)
+local function IsPoliceJob(job)
     for k, v in pairs(Config.PoliceJob) do
         if job == v then
             return true
@@ -14,8 +14,16 @@ function IsPoliceJob(job)
     return false
 end
 
-RegisterServerEvent("dispatch:server:notify")
-AddEventHandler("dispatch:server:notify", function(data)
+local function IsDispatchJob(job)
+    for k, v in pairs(Config.PoliceAndAmbulance) do
+        if job == v then
+            return true
+        end
+    end
+    return false
+end
+
+RegisterServerEvent("dispatch:server:notify", function(data)
 	local newId = #calls + 1
 	calls[newId] = data
     calls[newId]['source'] = source
@@ -25,9 +33,12 @@ AddEventHandler("dispatch:server:notify", function(data)
     calls[newId]['time'] = os.time() * 1000
 
 	TriggerClientEvent('dispatch:clNotify', -1, data, newId, source)
-    TriggerClientEvent("ps-dispatch:client:AddCallBlip", -1, data.origin, dispatchCodes[data.dispatchcodename])
+    if not data.alert then 
+        TriggerClientEvent("ps-dispatch:client:AddCallBlip", -1, data.origin, dispatchCodes[data.dispatchcodename], newId)
+    else
+        TriggerClientEvent("ps-dispatch:client:AddCallBlip", -1, data.origin, data.alert, newId)
+    end
 end)
-
 
 function GetDispatchCalls() return calls end
 exports('GetDispatchCalls', GetDispatchCalls) -- 
@@ -109,5 +120,14 @@ AddEventHandler('explosionEvent', function(source, info)
                 ExplosionCooldown = false
             end)
         end
+    end
+end)
+
+QBCore.Commands.Add("cleardispatchblips", "Clear all dispatch blips", {}, false, function(source, args)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+	local job = Player.PlayerData.job.name
+    if IsDispatchJob(job) then
+        TriggerClientEvent('ps-dispatch:client:clearAllBlips', src)
     end
 end)
